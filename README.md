@@ -44,7 +44,6 @@ docker-compose -f setup.yml up
 docker-compose up
 ```
 
-
 ### Exploring the logs in Kafka
 The above steps will create the necessary setup to:
 1. Ingest the logs in input/ to the Elasticsearch instance
@@ -54,6 +53,15 @@ The above steps will create the necessary setup to:
 To explore the data, one can simply go to [Kibana](http://localhost:5601) and go to the Discover tab (the icon that looks like a compass).
 The dashboards are available from the Dashboard tab (the icon that looks a set of rectangles) and searching for the word "Kafka".
 
+
+### Tearing it all down for the next set of logs
+
+Run the following steps:
+
+```
+docker-compose -f docker-compose.yml -f setup.yml down -v
+
+```
 
 ## Built With
 
