@@ -44,6 +44,17 @@ docker-compose -f setup.yml up
 docker-compose up
 ```
 
+
+### Exploring the logs in Kafka
+The above steps will create the necessary setup to:
+1. Ingest the logs in input/ to the Elasticsearch instance
+2. Setup the ingest node pipeline to parse the Kafka logs correctly (timestamp, level, component, etc)
+3. Setup Kibana with the index patterns and setup a sample dashboard with the logs ingested
+
+To explore the data, one can simply go to [Kibana](http://localhost:5601) and go to the Discover tab (the icon that looks like a compass).
+The dashboards are available from the Dashboard tab (the icon that looks a set of rectangles) and searching for the word "Kafka".
+
+
 ## Built With
 
 * Filebeat (with the Kafka module)
