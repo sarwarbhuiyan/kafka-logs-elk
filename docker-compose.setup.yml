@@ -1,0 +1,15 @@
+version: '3.6'
+services:
+  setup_filebeat:
+    image: docker.elastic.co/beats/filebeat:${TAG}
+    container_name: setup_filebeat
+    user: root
+    volumes:
+      - "./config:/config"
+      - "./scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro"
+      - "./config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml"
+      - "./config/filebeat/modules.d:/usr/share/filebeat/modules.d"
+      - ".:/logs"
+    command: ['/bin/bash', '-c', 'cat /usr/local/bin/setup-beat.sh | tr -d "\r" | bash -s filebeat']
+    networks: ['stack']
+    depends_on: ['elasticsearch', 'kibana']

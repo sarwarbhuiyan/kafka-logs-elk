@@ -1,0 +1,65 @@
+version: '3.6'
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.3.0
+    volumes:
+      - "./kibana.yml:/usr/share/kibana/config/kibana.yml"
+    restart: always
+    ports:
+      - "5601:5601"
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    networks: ['stack']
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    environment:
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - "es_data:/usr/share/elasticsearch/data"
+    ports:
+      - "9200:9200"
+    networks: ['stack']
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:${TAG}
+    container_name: filebeat
+    secrets:
+    - source: filebeat.yml
+      target: /usr/share/filebeat/filebeat.yml
+    volumes:
+      - "./input:/logs"
+      - "./scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro"
+      - "./config/filebeat/modules.d:/usr/share/filebeat/modules.d"
+      - "filebeat_data:/usr/share/filebeat/data"
+    depends_on:
+      - elasticsearch
+      - kibana
+    networks: ['stack']
+    healthcheck:
+      test: filebeat test config
+      interval: 30s
+      timeout: 15s
+      retries: 5
+
+
+networks: {stack: {}}
+# use docker volume to persist ES data outside of a container.
+volumes:
+  es_data:
+  filebeat_data:
+  
+secrets:
+  filebeat.yml:
+    file: ./config/filebeat/filebeat.yml
+
+

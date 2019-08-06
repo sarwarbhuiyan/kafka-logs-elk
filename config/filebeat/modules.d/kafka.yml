@@ -1,0 +1,5 @@
+- module: kafka
+  log:
+    enabled: true
+    var.paths:
+    - "/logs/*.log"

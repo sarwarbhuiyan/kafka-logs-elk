@@ -1,0 +1,21 @@
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+
+filebeat.modules:
+- module: kafka
+  log: 
+    enabled: true
+    var.paths:
+    - "/logs/*.log"
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+
+setup.kibana:
+  host: "kibana:5601"
+
+
+
+#output.logstash:
+#  hosts: [ "logstash:5044" ]
+
